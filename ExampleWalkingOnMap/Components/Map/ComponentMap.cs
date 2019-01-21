@@ -11,14 +11,39 @@ namespace ExampleWalkingOnMap.Components.Map
         private Texture2D _textureMapTiles;
         private int _mapTileWidth, _mapTileHeight;
 
-        private Vector2 _screenOffset, _movePosition;
+        /// <summary>
+        ///     This screen offset need to center the middle postion of the window.
+        /// </summary>
+        private Vector2 _screenOffset;
+
+        /// <summary>
+        ///     actual own position.
+        /// </summary>
+        private Vector2 _movePosition;
+
+        /// <summary>
+        ///     Get actual Position with screen offset.
+        /// </summary>
         public Vector2 Position => new Vector2(this._movePosition.X + this._screenOffset.X,
                                                this._movePosition.Y + this._screenOffset.Y);
 
-        private int _mapWidth,  _mapHeight;
+        /// <summary>
+        ///     Count of map pixel width.
+        /// </summary>
+        private int _mapWidth;
+
+        /// <summary>
+        ///     Count of map pixel height.
+        /// </summary>
+        private int _mapHeight;
 
         public ComponentMap(Game game, ComponentInputs inputs) : base(game) => this._inputs = inputs;
 
+        /// <summary>
+        ///     Set the actual windows size to set the actual position in the middle.
+        /// </summary>
+        /// <param name="screenWidth">Set the width screen.</param>
+        /// <param name="screenHeight">Set the height screen.</param>
         internal void SetScreenOffset(float screenWidth, float screenHeight)
         {
             var centerScreenWidth = screenWidth / 2;
@@ -34,18 +59,32 @@ namespace ExampleWalkingOnMap.Components.Map
                 this._textureMapTiles = Texture2D.FromStream(this.Game.GraphicsDevice, stream);
             }
 
+            // Create map or you can load a map.
             this._mapTiles = MapHelper.CreateMap();
+
+            // size of the bitmap and count of contains tiles.
+            // tile pixel width and height
             this._mapTileWidth = this._textureMapTiles.Width / 2;
             this._mapTileHeight = this._textureMapTiles.Height / 2;
+
+            // pixel width and height of the map
             this._mapWidth = this._mapTileWidth * this._mapTiles.GetLength(0);
             this._mapHeight = this._mapTileHeight * this._mapTiles.GetLength(1);
         }
 
+        /// <summary>
+        ///     Update the actual position by using the inputs.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             this._movePosition += this._inputs.Inputs.Move * 2f;
         }
 
+        /// <summary>
+        ///     Draw all tiles to screen.
+        /// </summary>
+        /// <param name="spriteBatch">Set a open spriteBatch for draw.</param>
         public void DrawMapTiles(SpriteBatch spriteBatch)
         {
             for (int iY = 0; iY < this._mapTiles.GetLength(0); iY++)

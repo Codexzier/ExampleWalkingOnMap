@@ -2,6 +2,9 @@
 
 namespace ExampleWalkingOnMap.Components.Inputs
 {
+    /// <summary>
+    ///     Contains the move values for x and y
+    /// </summary>
     public class InputData
     {
         public Vector2 Move => new Vector2(this.MoveX, this.MoveY);

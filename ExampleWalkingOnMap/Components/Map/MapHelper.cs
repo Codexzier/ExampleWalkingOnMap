@@ -2,12 +2,20 @@
 
 namespace ExampleWalkingOnMap.Components.Map
 {
+    /// <summary>
+    ///     Contains a simple created map.
+    /// </summary>
     internal class MapHelper
     {
         internal static GroundTile[,] CreateMap()
         {
             int[][] map = new int[10][];
 
+            // a simple visual reading map
+            // 0 = grass
+            // 1 = sand
+            // 2 = water
+            // 3 = stone
             map[0] = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 2, 2 };
             map[1] = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 2, 2 };
             map[2] = new int[10] { 1, 1, 1, 1, 1, 1, 1, 0, 2, 2 };
@@ -19,6 +27,7 @@ namespace ExampleWalkingOnMap.Components.Map
             map[8] = new int[10] { 0, 0, 0, 0, 0, 0, 1, 0, 3, 3 };
             map[9] = new int[10] { 0, 0, 0, 0, 0, 0, 1, 0, 3, 0 };
 
+            // map the number to the target object
             GroundTile[,] groundTiles = new GroundTile[10, 10];
 
             for (int iY = 0; iY < 10; iY++)
@@ -32,6 +41,11 @@ namespace ExampleWalkingOnMap.Components.Map
             return groundTiles;
         }
 
+        /// <summary>
+        ///     Map the number to the ground object.
+        /// </summary>
+        /// <param name="groundTile">Number information</param>
+        /// <returns>Return the ground with tile information.</returns>
         private static GroundTile GetMappingGroundTile(int groundTile)
         {
             switch (groundTile)

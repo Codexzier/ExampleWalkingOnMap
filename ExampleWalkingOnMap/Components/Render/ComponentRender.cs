@@ -5,6 +5,9 @@ using Windows.UI.ViewManagement;
 
 namespace ExampleWalkingOnMap.Components.Render
 {
+    /// <summary>
+    ///     Draw all object to the screen.
+    /// </summary>
     public class ComponentRender : DrawableGameComponent
     {
         private readonly ComponentMap _componentMap;
@@ -19,12 +22,16 @@ namespace ExampleWalkingOnMap.Components.Render
         {
             this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
+            // set the position to the middel of the screen
             var screenWidth = (float)ApplicationView.GetForCurrentView().VisibleBounds.Width;
             var screenHeight = (float)ApplicationView.GetForCurrentView().VisibleBounds.Height;
-
             this._componentMap.SetScreenOffset(screenWidth, screenHeight);
         }
 
+        /// <summary>
+        /// Draw all elements to screen.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             this.GraphicsDevice.Clear(Color.DarkBlue);
