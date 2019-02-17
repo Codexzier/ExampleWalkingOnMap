@@ -57,15 +57,17 @@ namespace ExampleWalkingOnMap.Components.Map
         private int _step = 0;
         private int _mode = 2;
 
-        private float _moveX = 0.1f;
-        private float _moveY = 0.1f;
+        private float _moveX = 1f;
+        private float _moveY = 1f;
 
-        private float _rotateX = 1f;
-        private float _rotateY = 1f;
+        private float _rotateX = .1f;
+        private float _rotateY = .1f;
+        private float _rotate = 0f;
 
         public int ShowObjects { get; set; }
 
         public int Mode => this._mode;
+        public float _scale = .5f;
 
         #endregion
 
@@ -90,7 +92,7 @@ namespace ExampleWalkingOnMap.Components.Map
             }
 
             // Create map or you can load a map.
-            this._mapTiles = MapHelper.CreateMap(9);
+            this._mapTiles = MapHelper.CreateMap(3);
             this._mapTiles2 = MapHelper.CreateMap(10);
             this._mapTiles3 = MapHelper.CreateMap(20);
 
@@ -108,6 +110,8 @@ namespace ExampleWalkingOnMap.Components.Map
 
             this._mapWidth3 = this._mapTileWidth * this._mapTiles3.GetLength(0);
             this._mapHeight3 = this._mapTileHeight * this._mapTiles3.GetLength(1);
+
+            this._stopwatch.Start();
         }
 
         /// <summary>
@@ -131,13 +135,8 @@ namespace ExampleWalkingOnMap.Components.Map
                         this._mode++;
                     }
 
-                    GroundTile[] tilesTmp = this.GetTiles();
-
-                    foreach (var item in tilesTmp)
-                    {
-                        item.Position = new Vector3();
-                        item.Rotation = new Vector3();
-                    }
+                    this._movePosition = new Vector2();
+                    this._rotate = 0f;
                 }
                 else
                 {
@@ -221,11 +220,9 @@ namespace ExampleWalkingOnMap.Components.Map
                     break;
             }
 
-            foreach (var item in tiles)
-            {
-                item.Position += new Vector3(moveX, moveY, 0) * _speed;
-                item.Rotation += new Vector3(MathHelper.ToRadians(rotateX), MathHelper.ToRadians(rotateY), MathHelper.ToRadians(rotateZ));
-            }
+
+            this._movePosition += new Vector2(moveX, moveY);
+            this._rotate +=  rotateX + rotateY;
         }
 
         private GroundTile[,] GetTiles() 
@@ -256,14 +253,16 @@ namespace ExampleWalkingOnMap.Components.Map
         /// <param name="spriteBatch">Set a open spriteBatch for draw.</param>
         public void DrawMapTiles(SpriteBatch spriteBatch)
         {
-            for (int iY = 0; iY < this._mapTiles.GetLength(0); iY++)
+            var mapTiles = this.GetTiles();
+
+            for (int iY = 0; iY < mapTiles.GetLength(0); iY++)
             {
-                for (int iX = 0; iX < this._mapTiles.GetLength(1); iX++)
+                for (int iX = 0; iX < mapTiles.GetLength(1); iX++)
                 {
-                    Vector2 textureOffset = new Vector2(iX * this._mapTileWidth, iY * this._mapTileHeight);
+                    Vector2 textureOffset = new Vector2(iX * (this._mapTileWidth + 3), iY * (this._mapTileHeight + 3)) * this._scale;
                     Vector2 offset = this.Position + textureOffset;
 
-                    this._mapTiles[iY, iX].Draw(this._textureMapTiles, spriteBatch, offset);
+                    mapTiles[iY, iX].Draw(this._textureMapTiles, spriteBatch, offset, this._rotate, this._scale);
                 }
             }
         }

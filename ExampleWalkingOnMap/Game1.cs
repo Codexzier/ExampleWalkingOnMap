@@ -20,6 +20,7 @@
 /// 
 /// #########################################################################################################
 
+using ExampleWalkingOnMap.Components.DebugInfo;
 using ExampleWalkingOnMap.Components.Inputs;
 using ExampleWalkingOnMap.Components.Map;
 using ExampleWalkingOnMap.Components.Render;
@@ -34,6 +35,7 @@ namespace ExampleWalkingOnMap
         private ComponentInputs _componentInputs;
         private ComponentMap _componentMap;
         private ComponentRender _componentRender;
+        private ComponentDebug _componentDebug;
 
         public Game1()
         {
@@ -55,7 +57,13 @@ namespace ExampleWalkingOnMap
 
             this._componentRender = new ComponentRender(this, this._componentMap);
             this._componentRender.UpdateOrder = 3;
+            this._componentRender.DrawOrder = 1;
             this.Components.Add(this._componentRender);
+
+            this._componentDebug = new ComponentDebug(this, this._componentRender);
+            this._componentDebug.UpdateOrder = 3;
+            this._componentDebug.DrawOrder = 2;
+            this.Components.Add(this._componentDebug);
         }
     }
 }

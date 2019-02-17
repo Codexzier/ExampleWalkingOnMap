@@ -31,15 +31,15 @@ namespace ExampleWalkingOnMap.Components.Map
         /// <param name="textureMapTiles">the texture with all tiles.</param>
         /// <param name="spriteBatch">for draw on the screen</param>
         /// <param name="offset">the offset is the actual relative position from own moving postion.</param>
-        public void Draw(Texture2D textureMapTiles, SpriteBatch spriteBatch, Vector2 offset)
+        public void Draw(Texture2D textureMapTiles, SpriteBatch spriteBatch, Vector2 offset, float rotation, float scale)
         {
             spriteBatch.Draw(textureMapTiles,
                              offset,
                              this._texturePosition,
                              Color.White,
-                             0f,
+                             rotation,
                              new Vector2(0, 0),
-                             new Vector2(1, 1),
+                             scale,
                              SpriteEffects.None,
                              0f);
         }
