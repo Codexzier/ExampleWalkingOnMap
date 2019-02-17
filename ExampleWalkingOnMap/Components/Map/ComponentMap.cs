@@ -1,6 +1,8 @@
 ﻿using ExampleWalkingOnMap.Components.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Diagnostics;
 
 namespace ExampleWalkingOnMap.Components.Map
 {
@@ -39,6 +41,34 @@ namespace ExampleWalkingOnMap.Components.Map
 
         public ComponentMap(Game game, ComponentInputs inputs) : base(game) => this._inputs = inputs;
 
+        #region For test content
+
+        private GroundTile[,] _mapTiles2;
+        private int _mapWidth2;
+        private int _mapHeight2;
+
+        private GroundTile[,] _mapTiles3;
+        private int _mapWidth3;
+        private int _mapHeight3;
+
+        private Stopwatch _stopwatch = new Stopwatch();
+        private int _resetStopWatchSec = 1;
+
+        private int _step = 0;
+        private int _mode = 2;
+
+        private float _moveX = 0.1f;
+        private float _moveY = 0.1f;
+
+        private float _rotateX = 1f;
+        private float _rotateY = 1f;
+
+        public int ShowObjects { get; set; }
+
+        public int Mode => this._mode;
+
+        #endregion
+
         /// <summary>
         ///     Set the actual windows size to set the actual position in the middle.
         /// </summary>
@@ -60,7 +90,9 @@ namespace ExampleWalkingOnMap.Components.Map
             }
 
             // Create map or you can load a map.
-            this._mapTiles = MapHelper.CreateMap();
+            this._mapTiles = MapHelper.CreateMap(9);
+            this._mapTiles2 = MapHelper.CreateMap(10);
+            this._mapTiles3 = MapHelper.CreateMap(20);
 
             // size of the bitmap and count of contains tiles.
             // tile pixel width and height
@@ -70,6 +102,12 @@ namespace ExampleWalkingOnMap.Components.Map
             // pixel width and height of the map
             this._mapWidth = this._mapTileWidth * this._mapTiles.GetLength(0);
             this._mapHeight = this._mapTileHeight * this._mapTiles.GetLength(1);
+
+            this._mapWidth2 = this._mapTileWidth * this._mapTiles2.GetLength(0);
+            this._mapHeight2 = this._mapTileHeight * this._mapTiles2.GetLength(1);
+
+            this._mapWidth3 = this._mapTileWidth * this._mapTiles3.GetLength(0);
+            this._mapHeight3 = this._mapTileHeight * this._mapTiles3.GetLength(1);
         }
 
         /// <summary>
@@ -78,7 +116,138 @@ namespace ExampleWalkingOnMap.Components.Map
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            this._movePosition += this._inputs.Inputs.Move * 2f;
+            if (this._stopwatch.Elapsed.Seconds >= this._resetStopWatchSec)
+            {
+                if (this._step >= 9)
+                {
+                    this._step = 0;
+
+                    if (this._mode >= 2)
+                    {
+                        this._mode = 0;
+                    }
+                    else
+                    {
+                        this._mode++;
+                    }
+
+                    GroundTile[] tilesTmp = this.GetTiles();
+
+                    foreach (var item in tilesTmp)
+                    {
+                        item.Position = new Vector3();
+                        item.Rotation = new Vector3();
+                    }
+                }
+                else
+                {
+                    this._step++;
+                }
+
+                this._stopwatch.Restart();
+            }
+
+            var tiles = this.GetTiles();
+
+            this.ShowObjects = tiles.Length;
+
+            float moveX = 0f;
+            float moveY = 0f;
+            float rotateX = 0f;
+            float rotateY = 0f;
+            float rotateZ = 0f;
+
+            switch (this._step)
+            {
+                case (0):
+                    {
+                        moveX += this._moveX;
+                        break;
+                    }
+                case (1):
+                    {
+                        moveY += this._moveY;
+                        break;
+                    }
+                case (2):
+                    {
+                        moveX -= this._moveX;
+                        break;
+                    }
+                case (3):
+                    {
+                        moveY -= this._moveY;
+                        break;
+                    }
+                case (4):
+                    {
+                        rotateX += this._rotateX;
+                        break;
+                    }
+                case (5):
+                    {
+                        rotateY += this._rotateY;
+                        break;
+                    }
+                case (6):
+                    {
+                        rotateX -= this._rotateX;
+                        break;
+                    }
+                case (7):
+                    {
+                        rotateY -= this._rotateY;
+                        break;
+                    }
+                case (8):
+                    {
+                        moveX -= this._moveX;
+                        moveY -= this._moveY;
+                        rotateX -= this._rotateX;
+                        rotateY -= this._rotateY;
+                        rotateZ -= 2;
+                        break;
+                    }
+                case (9):
+                    {
+                        moveX += this._moveX;
+                        moveY += this._moveY;
+                        rotateX += this._rotateX;
+                        rotateY += this._rotateY;
+                        rotateZ += 2;
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            foreach (var item in tiles)
+            {
+                item.Position += new Vector3(moveX, moveY, 0) * _speed;
+                item.Rotation += new Vector3(MathHelper.ToRadians(rotateX), MathHelper.ToRadians(rotateY), MathHelper.ToRadians(rotateZ));
+            }
+        }
+
+        private GroundTile[,] GetTiles() 
+        {
+            GroundTile[,] tilesTmp;
+            switch (this._mode)
+            {
+                case 0:
+                    tilesTmp = this._mapTiles;
+                    break;
+                case 1:
+                    tilesTmp = this._mapTiles2;
+                    break;
+                case 2:
+                    tilesTmp = this._mapTiles3;
+                    break;
+                default:
+                    tilesTmp = new  GroundTile[0,0];
+                    break;
+            }
+
+            return tilesTmp;
         }
 
         /// <summary>

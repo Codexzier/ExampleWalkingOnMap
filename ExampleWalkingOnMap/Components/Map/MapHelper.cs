@@ -7,6 +7,22 @@ namespace ExampleWalkingOnMap.Components.Map
     /// </summary>
     internal class MapHelper
     {
+        internal static GroundTile[,] CreateMap(int size)
+        {
+            GroundTile[,] map = new GroundTile[size, size];
+
+            for (int iY = 0; iY < map.GetLength(0); iY++)
+            {
+                for (int iX = 0; iX < map.GetLength(1); iX++)
+                {
+                    map[iY, iX] = GetMappingGroundTile(0);
+                }
+            }
+
+            return map;
+        }
+
+
         internal static GroundTile[,] CreateMap()
         {
             int[][] map = new int[10][];

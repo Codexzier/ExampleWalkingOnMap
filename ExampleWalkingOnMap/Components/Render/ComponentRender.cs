@@ -13,6 +13,8 @@ namespace ExampleWalkingOnMap.Components.Render
         private readonly ComponentMap _componentMap;
         private SpriteBatch _spriteBatch;
 
+        public ComponentMap ComponentContent => this._componentMap;
+
         public ComponentRender(Game game, ComponentMap componentMap) : base(game)
         {
             this._componentMap = componentMap;
